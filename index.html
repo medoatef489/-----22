@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>اختبار تأخر الكلام - الفصل الثاني | أسئلة أكاديمية متقدمة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Tajawal', 'Cairo', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* animated background container */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-symbol {
+            position: absolute;
+            font-size: 1.8rem;
+            opacity: 0.2;
+            user-select: none;
+            pointer-events: none;
+            white-space: nowrap;
+            animation: floatSlow linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes floatSlow {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.25; }
+            90% { opacity: 0.25; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* parallax effect container */
+        .parallax-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* main container */
+        .quiz-wrapper {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* header & controls */
+        .academic-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            border-radius: 2rem;
+            backdrop-filter: blur(12px);
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .badge-info {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 3rem;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            transition: 0.2s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.08);
+        }
+
+        .score-panel {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.8rem;
+            border-radius: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .score-card {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 3rem;
+            font-weight: 600;
+        }
+
+        .reset-btn {
+            border: none;
+            padding: 0.6rem 1.3rem;
+            border-radius: 2.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(0.96);
+        }
+
+        /* question card */
+        .question-card {
+            margin-bottom: 2rem;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: transform 0.25s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .question-card:hover {
+            transform: scale(1.01);
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 1rem;
+            border-radius: 1.2rem;
+            border: 1.5px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            transform: scale(1.01);
+            border-color: currentColor;
+        }
+
+        input[type="radio"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
+            accent-color: #1e88e5;
+        }
+
+        .option label {
+            flex: 1;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .check-btn {
+            margin-top: 0.8rem;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 2rem;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .check-btn:active {
+            transform: scale(0.97);
+        }
+
+        .feedback {
+            margin-top: 0.8rem;
+            padding: 0.6rem;
+            border-radius: 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .locked-msg {
+            font-style: italic;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        /* light mode (default) */
+        body.light {
+            background: #f4f7fc;
+            color: #1a2c3e;
+        }
+
+        body.light .academic-header,
+        body.light .score-panel,
+        body.light .question-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(33, 147, 176, 0.2);
+        }
+
+        body.light .question-card {
+            background: #ffffffdd;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        body.light .option {
+            background: #f0f4f9;
+            border-color: #cbd5e1;
+        }
+
+        body.light .check-btn {
+            background: #1e6f9f;
+            color: white;
+        }
+
+        body.light .reset-btn {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* dark mode */
+        body.dark {
+            background: #0a0f1a;
+            color: #eef2ff;
+        }
+
+        body.dark .academic-header,
+        body.dark .score-panel,
+        body.dark .question-card {
+            background: rgba(18, 25, 45, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid #2d3a5e;
+        }
+
+        body.dark .question-card {
+            background: #111827dd;
+        }
+
+        body.dark .option {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        body.dark .check-btn {
+            background: #3b82f6;
+            color: white;
+        }
+
+        body.dark .reset-btn {
+            background: #2d3a5e;
+            color: #cbd5ff;
+        }
+
+        .feedback.correct {
+            background: #22c55e30;
+            border-right: 4px solid #22c55e;
+        }
+        .feedback.wrong {
+            background: #ef444430;
+            border-right: 4px solid #ef4444;
+        }
+
+        .disabled-radio {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 680px) {
+            .quiz-wrapper {
+                padding: 0.7rem;
+            }
+            .question-text {
+                font-size: 1.1rem;
+            }
+            .academic-header {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="light">
+    <div class="animated-bg" id="animatedBg"></div>
+    <div class="parallax-layer" id="parallaxLayer"></div>
+
+    <div class="quiz-wrapper">
+        <div class="academic-header">
+            <h1>📖 أسئلة تأخر الكلام - الفصل الثاني<br><span style="font-size: 0.9rem;">تحليل متقدم | مستوى أكاديمي عالٍ</span></h1>
+            <div class="badge-info">
+                <button id="themeSwitcher" class="theme-toggle" aria-label="تبديل الوضع">🌙</button>
+                <button id="resetAllBtn" class="reset-btn">🔄 إعادة الاختبار بالكامل</button>
+            </div>
+        </div>
+
+        <div class="score-panel" id="scorePanel">
+            <div class="score-card">
+                <div class="score-item">✅ صحيح: <span id="correctCount">0</span></div>
+                <div class="score-item">❌ خاطئ: <span id="wrongCount">0</span></div>
+                <div class="score-item">📊 النسبة: <span id="percentScore">0</span>%</div>
+                <div class="score-item">🏆 التقييم: <span id="evalText">---</span></div>
+            </div>
+        </div>
+
+        <div id="questionsContainer" class="questions-container"></div>
+        <footer>الاختبار مبني على الفهم العميق لموضوعات الفصل الثاني – كل سؤال مغلق بعد التصحيح</footer>
+    </div>
+
+    <script>
+        // ---------- 30 أسئلة متقدمة (MCQ) تغطي الفصل الثاني (تعريفات، محكات، عوامل، سمات) ----------
+        const questionsData = [
+            { text: "وفقاً لموسوعة التربية الخاصة، يُعرَّف تأخر الكلام بأنه تكوين لغوي أقل من المعتاد مقارنة بالعمر والجنس والذكاء، مع افتقار التراكيب للتماسك بسبب نقص:",
+              options: ["أدوات الربط والضمائر", "المفردات والجمل الخبرية", "الأفعال والأزمنة فقط", "الحروف والجر"], correct: 0, explanation: "النقص الأساسي في أدوات الربط والضمائر يؤدي لعدم التماسك." },
+            { text: "يشير فتحي الشرقاوي (1993) إلى أن تأخر الكلام يتجلى في:",
+              options: ["فقر في وحدات الكلام مقارنة بالأقران", "ضعف النطق فقط", "الاضطرابات السلوكية", "صعوبات القراءة"], correct: 0, explanation: "الشرقاوي ركز على فقر الوحدات الكلامية (عدد الكلمات) عند المقارنة." },
+            { text: "بحسب تعريف فيصل محمد (1999) ، التأخر اللغوي هو ضعف في:",
+              options: ["الحصيلة اللغوية (قلة الكلمات التي يعرفها ويستخدمها)", "التركيب النحوي فقط", "فهم الإشارات", "الطلاقة الصوتية"], correct: 0, explanation: "الحصيلة اللغوية تمثل جوهر التعريف." },
+            { text: "وفقاً للسرطاوي (2002) يتصف الطفل المتأخر لغوياً باستخدام لغة بسيطة للغاية في مراحل يفترض أن تنمو فيها اللغة، وهذا يؤدي إلى:",
+              options: ["بطء اكتساب اللغة", "فقدان السمع", "فرط الحركة", "التبول اللاإرادي"], correct: 0, explanation: "السرطاوي يربط البساطة المفرطة ببطء الاكتساب." },
+            { text: "من تعريف كمال سيسالم (2002) لتأخر الكلام: قصور في تنظيم الكلام وتركيبه، مثل وضع المذكر مكان المؤنث أو جمل غير مفيدة. أي من التالي مثال على هذا القصور؟",
+              options: ["الطفل يقول: 'هي ذهب إلى المدرسة'", "الطفل يرفض الكلام تماماً", "الطفل يصدر أصواتاً حيوانية", "الطفل يقرأ كلمات معكوسة"], correct: 0, explanation: "الخطأ في الضمائر (المذكر/المؤنث) هو نموذج لقصور التركيب." },
+            { text: "أشار (Leekam, 2004) إلى أن تأخر الكلام يرتبط بعدم قدرة الطفل على استخدام اللغة في سياقها السليم مع عجز عن فهم المعاني. أي من التالي يمثل ذلك؟",
+              options: ["لا يفهم أن كلمة 'برد' قد تعني انخفاض الحرارة أو الشعور بالوحدة", "قلة الكلمات", "تأتأة شديدة", "صوت مرتفع بلا معنى"], correct: 0, explanation: "الفشل في فهم السياقات المتعددة يعكس العجز الوارد في التعريف." },
+            { text: "حسب تعريف Alexander (2005) فإن الطفل المتأخر لغوياً يمر بنفس مراحل النمو اللغوي الطبيعية لكن لغته تشبه لغة:",
+              options: ["أطفال أصغر منه سناً", "أطفال من جنس مختلف", "أطفال من بيئة أخرى", "أطفال يعانون إعاقة عقلية"], correct: 0, explanation: "التأخر البسيط مع نفس التسلسل ولكن بمستوى عمر أصغر." },
+            { text: "واحدة من محكات اكتشاف المتأخرين في الكلام عند عمر 18 شهراً هي:",
+              options: ["لا يعبر باستخدام كلمات بسيطة", "لا يستخدم الإيماءات في عمر 12 شهراً", "لا يفهم الأوامر في عمر 3 سنوات", "لا يروي قصصاً بعمر 4 سنوات"], correct: 0, explanation: "المحك明确指出: لا يعبر باستخدام كلمات بسيطة في عمر 18 شهراً." },
+            { text: "أي من التالي يُعتبر محكاً مهماً في عمر السنتين (24 شهراً) حسب النص؟",
+              options: ["لا يستخدم عبارات للتواصل مع الآخرين", "لا يناغي بين 12-15 شهراً", "لا يجيب بكلمة 'نعم' فقط", "يصرخ أثناء اللعب"], correct: 0, explanation: "عمر سنتين: لا يستخدم عبارات للتواصل مع الآخرين." },
+            { text: "من بين العوامل المؤثرة في تأخر الكلام، أي عامل يتعلق بالفروق بين الجنسين حسب النص؟",
+              options: ["الإناث أسرع من الذكور بحوالي 4 أشهر في بدايات النطق", "الذكور لديهم حصيلة لغوية أكبر", "لا فروق ذات دلالة", "الإناث أكثر تردداً على مراكز التخاطب"], correct: 0, explanation: "النص يذكر أن الإناث أسرع بحوالي 4 أشهر والذكور أكثر تردداً للمراكز." },
+            { text: "أي من الآثار التالية تتعلق بضعف حاسة السمع بحسب 'محمد قطبي'؟",
+              options: ["لن يتكلم الطفل إلا بتدريبات خاصة مبكرة، ولغته قصيرة وبسيطة", "يؤدي إلى ثراء لغوي", "لا تأثير على اللغة طالما العمر أقل من 3 سنوات", "تأخر حركي فقط"], correct: 0, explanation: "ضعف السمع الشديد يمنع الكلام بدون تدريب خاص، واللغة تصبح بسيطة." },
+            { text: "العملية التي تعجل من تعلم النطق وتصحيح الأخطاء حسب النص هي:",
+              options: ["تشجيع الوالدين وتعزيزهما للطفل", "الاعتماد على التلفاز فقط", "العقاب المستمر", "العزلة"], correct: 0, explanation: "أساليب التعزيز الإيجابي من الوالدين تسرع التعلم." },
+            { text: "أي العوامل البيئية المذكورة تؤدي إلى انتشار مشكلات التأخر اللغوي؟",
+              options: ["البيئات الفقيرة ذات المستويات الاجتماعية والاقتصادية الدنيا", "البيئات الغنية ثقافياً", "الأسر المثقفة", "التعرض لوسائل الإعلام المتعددة"], correct: 0, explanation: "الفقر الثقافي والاقتصادي يرتبط بالتأخر اللغوي." },
+            { text: "بخصوص العوامل الأسرية: الطفل الوحيد يمتلك حصيلة لغوية أفضل من طفل الأسرة الكبيرة بسبب:",
+              options: ["زيادة تفاعله مع البالغين", "افتقاره للتفاعل", "التنافس بين الإخوة", "العقاب"], correct: 0, explanation: "التفاعل المتزايد مع البالغين يحسن الحصيلة." },
+            { text: "العلاقة بين الإعاقة العقلية والتأخر اللغوي تتمثل في:",
+              options: ["انتشار مشاكل الحذف والإبدال وضعف المفردات بين المتأخرين عقلياً", "لا علاقة", "الإعاقة العقلية تزيد الطلاقة", "تحسين النحو"], correct: 0, explanation: "النص يذكر ضعف المفردات والحذف والإبدال لدى المتأخرين عقلياً." },
+            { text: "وسائل الإعلام (التلفاز والراديو) تؤثر إيجاباً على الحصيلة اللغوية للطفل من خلال:",
+              options: ["المثيرات السمعية والبصرية التي تزوده بمفردات جديدة", "إعاقة التفاعل", "جعل الطفل منطوياً", "لا تؤثر"], correct: 0, explanation: "المثيرات السمعية البصرية تزود الطفل بمفردات." },
+            { text: "أي اضطراب نفسي يسبب تأخراً لغوياً ملحوظاً مع ميل للوحدة والصمت وتجنب الغرباء؟",
+              options: ["الانطوانية (التوحد) وفصام الطفولة", "اضطراب نقص الانتباه", "القلق الانفعالي", "الاكتئاب البسيط"], correct: 0, explanation: "النص يذكر الانطوانية وفصام الطفولة كأمثلة." },
+            { text: "من السمات العامة للمتأخرين في الكلام (مشكلات اللغة الاستيعابية) يظهر الطفل وكأنه لا يسمع رغم سلامة السمع بسبب:",
+              options: ["صعوبة فهم الكلمات المجردة والأوامر", "العناد", "فرط النشاط", "ضعف البصر"], correct: 0, explanation: "صعوبة فهم الأوامر والتجريد تجعله يبدو غير منتبه." },
+            { text: "أي مما يلي يعد مثالاً على مشكلات اللغة التعبيرية حسب النص؟",
+              options: ["عدم نضج الكلام بحيث يبدو حديث الطفل مناسباً لعمر أقل", "فهم متقدم", "نطق سليم جداً", "ثراء في المفردات"], correct: 0, explanation: "عدم النضج بحيث يبدو عمره اللغوي أصغر." },
+            { text: "السمات الاجتماعية والوجدانية للأطفال المتأخرين لغوياً تشمل تفضيل اختيار:",
+              options: ["أصدقاء أصغر منه سناً", "أصدقاء أكبر منه سناً", "اللعب وحيداً دائماً", "العدوانية الشديدة فقط"], correct: 0, explanation: "النص يذكر تفضيل أصدقاء أصغر سناً." },
+            { text: "من السمات الجسمانية المحتملة للأطفال المتأخرين كلامياً كما ورد:",
+              options: ["مشاكل في نمو الأسنان أو 'شق الحلق'", "زيادة الوزن", "قصر القامة", "تشوهات الأطراف"], correct: 0, explanation: "نمو الأسنان أو شق الحلق (cleft palate) مذكور." },
+            { text: "حسب النص، أي من العوامل التالية يؤثر بشكل مباشر على النطق عبر الأعضاء الحسية والعصبية؟",
+              options: ["الحالة الصحية وسلامة أعضاء النطق", "النوم", "التغذية فقط", "الذكاء العاطفي"], correct: 0, explanation: "الجهاز العصبي والتنفسي والصوتي وسلامتها أساسية." },
+            { text: "الطفل الذي يتراوح عمره بين 4 إلى 5 سنوات ويعجز عن سرد القصص البسيطة وفق المحكات يعد:",
+              options: ["مؤشراً قوياً على تأخر لغوي", "طبيعياً تماماً", "فائق الذكاء", "مشكلة سمعية حادة"], correct: 0, explanation: "المحك: يعجز عن سرد القصص البسيطة بين 4-5 سنوات." },
+            { text: "ماذا يعني اقتصار كلام الطفل على مقاطع بسيطة فقط رغم تقدمه في العمر (محك الكشف)؟",
+              options: ["دليل على تأخر محتمل في الكلام", "مؤشر على الموهبة", "تأخر عضلي فقط", "عرض طبيعي عند الذكور"], correct: 0, explanation: "المحك التاسع: اقتصار كلامه على مقاطع بسيطة فقط." },
+            { text: "وفق ألكسندر (2005) أي الخيارات يعبر عن جوهر تعريفه لتأخر الكلام؟",
+              options: ["الطفل يمر بنفس مراحل النمو اللغوي لكن لغته تماثل لغة أصغر سناً", "فقدان اللغة تماماً", "خلل في النطق فقط", "عدم القدرة على الكلام مطلقاً"], correct: 0, explanation: "التعريف الدقيق كما ورد في النص." },
+            { text: "أي من العوامل المتعلقة بالتعلم والتعزيز يقلص الحصيلة اللغوية؟",
+              options: ["غياب تعزيز الوالدين وتشجيعهما", "الحوار اليومي", "القراءة للطفل", "التلفاز التفاعلي"], correct: 0, explanation: "غياب التعزيز يجعل تعديل السلوكيات صعباً ويقلص الحصيلة." },
+            { text: "الطفل الذي يستخدم إجابات من نمط 'نعم' فقط ويجد صعوبة بالغة في التعبير عن مشاعر الضيق يدل على:",
+              options: ["مشكلة في اللغة التعبيرية من سمات المتأخرين", "انطوائية عادية", "تفوق في الذكاء", "فقدان سمع كلي"], correct: 0, explanation: "اكتفاء بكلمة واحدة وضعف التعبير من سمات التأخر التعبيري." },
+            { text: "ما العامل الذي يجعل الطفل يميل للصمت بسبب ضعف حصيلته اللغوية (محك)؟",
+              options: ["ضعف الحصيلة يؤدي للجوء إلى الصمت", "العناد", "التحدي الأسري", "الرغبة في الإتقان"], correct: 0, explanation: "المحك الخامس عشر: يلجأ للصمت بسبب ضعف الحصيلة." },
+            { text: "الفروق الفردية في بدء الكلام: بعض الأطفال يتأخرون حتى سن الثامنة رغم امتلاك نفس مستوى الذكاء، هذا يعني:",
+              options: ["تأخر لغوي أولي قد لا يعني إعاقة عقلية", "جميعهم مصابون بضعف سمع", "ضرورة التدخل الجراحي", "لا يمكن أن يحدث"], correct: 0, explanation: "النص يؤكد أن بعضهم يتأخر مع ذكاء طبيعي." },
+            { text: "أي من التالي يُعد مثالاً على مشكلة استيعابية عند الطفل حسب السمات العامة؟",
+              options: ["الخلط في مفاهيم الزمن (يقول: ذهبنا إلى السوق غداً)", "الرفض المتعمد للكلام", "صعوبات النطق الحركي", "تجنب التواصل البصري"], correct: 0, explanation: "الخلط في الأزمنة مثال صريح على مشكلة استيعابية." }
+        ];
+
+        // تخزين حالة الأسئلة: { locked: bool, selectedAnswer: index|null, feedbackMsg, isCorrect }
+        let questionsState = JSON.parse(localStorage.getItem("speechDelay_ch2_state")) || 
+            Array(questionsData.length).fill().map(() => ({ locked: false, selected: null, feedback: "", isCorrect: false }));
+
+        let correctTotal = 0, wrongTotal = 0;
+
+        function updateStats() {
+            correctTotal = questionsState.filter(s => s.locked && s.isCorrect === true).length;
+            wrongTotal = questionsState.filter(s => s.locked && s.isCorrect === false).length;
+            const totalAnswered = correctTotal + wrongTotal;
+            const percent = totalAnswered === 0 ? 0 : ((correctTotal / totalAnswered) * 100).toFixed(1);
+            document.getElementById("correctCount").innerText = correctTotal;
+            document.getElementById("wrongCount").innerText = wrongTotal;
+            document.getElementById("percentScore").innerText = percent;
+            let evaluation = "";
+            if (totalAnswered === 0) evaluation = "لم يبدأ بعد";
+            else if (percent >= 85) evaluation = "ممتاز - مستوى تحليل عميق";
+            else if (percent >= 70) evaluation = "جيد جداً - فهم متقدم";
+            else if (percent >= 50) evaluation = "مقبول - يحتاج مراجعة";
+            else evaluation = "ضعيف - راجع الفصل بدقة";
+            document.getElementById("evalText").innerText = evaluation;
+            localStorage.setItem("speechDelay_ch2_state", JSON.stringify(questionsState));
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById("questionsContainer");
+            container.innerHTML = "";
+            questionsData.forEach((q, idx) => {
+                const state = questionsState[idx];
+                const card = document.createElement("div");
+                card.className = "question-card";
+                card.setAttribute("data-qidx", idx);
+                const qDiv = document.createElement("div");
+                qDiv.className = "question-text";
+                qDiv.innerText = `${idx+1}. ${q.text}`;
+                card.appendChild(qDiv);
+                const optsDiv = document.createElement("div");
+                optsDiv.className = "options-list";
+                q.options.forEach((opt, optIdx) => {
+                    const optDiv = document.createElement("div");
+                    optDiv.className = "option";
+                    const radio = document.createElement("input");
+                    radio.type = "radio";
+                    radio.name = `q${idx}`;
+                    radio.value = optIdx;
+                    radio.disabled = state.locked;
+                    if (state.selected === optIdx && state.locked) radio.checked = true;
+                    radio.addEventListener("change", (e) => {
+                        if (!state.locked) {
+                            questionsState[idx].selected = parseInt(e.target.value);
+                            localStorage.setItem("speechDelay_ch2_state", JSON.stringify(questionsState));
+                            renderQuestions(); // re-render to keep consistency
+                        }
+                    });
+                    const label = document.createElement("label");
+                    label.innerText = opt;
+                    optDiv.appendChild(radio);
+                    optDiv.appendChild(label);
+                    if (state.locked) optDiv.style.opacity = "0.8";
+                    optsDiv.appendChild(optDiv);
+                });
+                card.appendChild(optsDiv);
+                const checkBtn = document.createElement("button");
+                checkBtn.innerText = "✔️ Check Answer / تصحيح";
+                checkBtn.className = "check-btn";
+                if (state.locked) {
+                    checkBtn.disabled = true;
+                    checkBtn.style.opacity = "0.6";
+                    checkBtn.innerText = "✔️ تم التصحيح 🔒";
+                }
+                checkBtn.addEventListener("click", () => {
+                    if (state.locked) return;
+                    const selectedVal = state.selected;
+                    if (selectedVal === null || selectedVal === undefined) {
+                        alert("يرجى اختيار إجابة أولاً");
+                        return;
+                    }
+                    const isAnsCorrect = (selectedVal === q.correct);
+                    const fbMsg = isAnsCorrect ? "✅ إجابة صحيحة! تحليل دقيق." : `❌ إجابة خاطئة. الصحيح: ${q.options[q.correct]}. ${q.explanation || "راجع المصادر"}`;
+                    questionsState[idx].locked = true;
+                    questionsState[idx].isCorrect = isAnsCorrect;
+                    questionsState[idx].feedback = fbMsg;
+                    localStorage.setItem("speechDelay_ch2_state", JSON.stringify(questionsState));
+                    updateStats();
+                    renderQuestions();
+                });
+                card.appendChild(checkBtn);
+                if (state.feedback) {
+                    const fbDiv = document.createElement("div");
+                    fbDiv.className = `feedback ${state.isCorrect ? "correct" : "wrong"}`;
+                    fbDiv.innerText = state.feedback;
+                    card.appendChild(fbDiv);
+                }
+                if (state.locked) {
+                    const lockMsg = document.createElement("div");
+                    lockMsg.className = "locked-msg";
+                    lockMsg.innerText = "🔒 السؤال مغلق (تم التصحيح مسبقاً)";
+                    card.appendChild(lockMsg);
+                }
+                container.appendChild(card);
+            });
+            updateStats();
+        }
+
+        function resetAll() {
+            if (confirm("سيتم إعادة تعيين جميع الإجابات وسيُفتح الاختبار من جديد. هل أنت متأكد؟")) {
+                questionsState = Array(questionsData.length).fill().map(() => ({ locked: false, selected: null, feedback: "", isCorrect: false }));
+                localStorage.setItem("speechDelay_ch2_state", JSON.stringify(questionsState));
+                renderQuestions();
+                updateStats();
+            }
+        }
+
+        // Theme + background animations + parallax
+        function initTheme() {
+            const storedTheme = localStorage.getItem("speechDelay_theme");
+            if (storedTheme === "dark") {
+                document.body.classList.remove("light");
+                document.body.classList.add("dark");
+                document.getElementById("themeSwitcher").innerHTML = "☀️";
+            } else {
+                document.body.classList.remove("dark");
+                document.body.classList.add("light");
+                document.getElementById("themeSwitcher").innerHTML = "🌙";
+            }
+        }
+        function toggleTheme() {
+            if (document.body.classList.contains("light")) {
+                document.body.classList.remove("light");
+                document.body.classList.add("dark");
+                localStorage.setItem("speechDelay_theme", "dark");
+                document.getElementById("themeSwitcher").innerHTML = "☀️";
+            } else {
+                document.body.classList.remove("dark");
+                document.body.classList.add("light");
+                localStorage.setItem("speechDelay_theme", "light");
+                document.getElementById("themeSwitcher").innerHTML = "🌙";
+            }
+        }
+
+        // generate floating academic symbols and parallax
+        function generateFloatingSymbols() {
+            const bgContainer = document.getElementById("animatedBg");
+            const symbols = ["📖", "🔤", "🗣️", "🧠", "📚", "🎓", "🧩", "🔊", "📝", "⚕️", "📈", "🧬", "📌"];
+            for (let i = 0; i < 50; i++) {
+                const span = document.createElement("div");
+                span.className = "floating-symbol";
+                span.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                const size = Math.floor(Math.random() * 28 + 16);
+                span.style.fontSize = size + "px";
+                span.style.left = Math.random() * 100 + "%";
+                span.style.animationDuration = Math.random() * 15 + 8 + "s";
+                span.style.animationDelay = Math.random() * 15 + "s";
+                span.style.opacity = Math.random() * 0.25 + 0.1;
+                bgContainer.appendChild(span);
+            }
+        }
+
+        function parallaxEffect() {
+            document.addEventListener("mousemove", (e) => {
+                const layer = document.getElementById("parallaxLayer");
+                const x = (window.innerWidth / 2 - e.clientX) / 80;
+                const y = (window.innerHeight / 2 - e.clientY) / 80;
+                layer.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        }
+
+        window.addEventListener("load", () => {
+            renderQuestions();
+            initTheme();
+            generateFloatingSymbols();
+            parallaxEffect();
+            document.getElementById("themeSwitcher").addEventListener("click", toggleTheme);
+            document.getElementById("resetAllBtn").addEventListener("click", resetAll);
+        });
+    </script>
+</body>
+</html>
